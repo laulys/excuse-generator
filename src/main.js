@@ -391,50 +391,104 @@ function buildGaugeTicks() {
   g.innerHTML = html;
 }
 
+/* The certificate is issued in three beats:
+   1. the document feeds up out of the folder (CSS: doc-issue)
+   2. the excuse types itself onto the page, platen speed with punctuation pauses
+   3. the stamp lands, the paper takes the hit, the needle sweeps
+   Tapping the excuse skips straight to beat 3. */
+
+let platenTimer = null;
+
+function typewrite(el, text, onDone) {
+  clearTimeout(platenTimer);
+  el.classList.remove('typing');
+  if (reducedMotion()) {
+    el.textContent = text;
+    onDone();
+    return;
+  }
+  el.textContent = '';
+  el.classList.add('typing');
+  let i = 0;
+  const finish = () => {
+    clearTimeout(platenTimer);
+    el.textContent = text;
+    el.classList.remove('typing');
+    el.onclick = null;
+    onDone();
+  };
+  el.onclick = finish;
+  const step = () => {
+    i += 1;
+    el.textContent = text.slice(0, i);
+    if (i >= text.length) {
+      finish();
+      return;
+    }
+    const ch = text[i - 1];
+    let delay = 11 + Math.random() * 9;
+    if (ch === ' ') delay *= 0.55;
+    if ('.,;:—'.includes(ch)) delay += 110; // the typist pauses at punctuation
+    platenTimer = setTimeout(step, delay);
+  };
+  platenTimer = setTimeout(step, 340); // paper settles before the keys start
+}
+
+function sealAndSweep(credibility) {
+  const cert = $('certificate');
+  const stamp = $('stamp');
+  const needle = $('gauge-needle');
+
+  stamp.classList.remove('slam');
+  cert.classList.remove('thud');
+  void stamp.offsetWidth;
+  stamp.classList.add('slam');
+  setTimeout(() => cert.classList.add('thud'), 300); // paper reacts on impact, not on release
+
+  const angle = `rotate(${credibility * 1.8 - 90}deg)`;
+  if (reducedMotion()) {
+    needle.style.transition = 'none';
+    needle.style.transform = angle;
+    $('cred-value').textContent = credibility;
+    return;
+  }
+  needle.style.transition = '';
+  requestAnimationFrame(() => {
+    needle.style.transform = angle;
+  });
+  const start = performance.now();
+  const dur = 1400;
+  const tick = (now) => {
+    const k = Math.min(1, (now - start) / dur);
+    const eased = 1 - Math.pow(1 - k, 4);
+    $('cred-value').textContent = Math.round(credibility * eased);
+    if (k < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
 function renderCertificate() {
   const { excuse, credibility, risk_note } = state.result;
   const cert = $('certificate');
   buildGaugeTicks();
 
-  $('excuse-text').textContent = excuse;
   $('risk-note').textContent = risk_note;
   $('conditions-line').textContent = conditionsLine();
   $('doc-number').textContent = docNumber();
   $('cred-class').textContent = credClass(credibility);
   $('barcode').textContent = `*${state.docId.replace(/\D+/g, '').slice(0, 10)}*`;
 
-  // reset animations
+  // reset the sequence
   cert.hidden = false;
-  const stamp = $('stamp');
-  stamp.classList.remove('slam');
+  $('stamp').classList.remove('slam');
   cert.classList.remove('thud');
   const needle = $('gauge-needle');
   needle.style.transition = 'none';
   needle.style.transform = 'rotate(-90deg)';
   $('cred-value').textContent = '0';
-  void cert.offsetWidth; // reflow to restart animations
-  stamp.classList.add('slam');
-  cert.classList.add('thud');
-  needle.style.transition = '';
-  requestAnimationFrame(() => {
-    needle.style.transform = `rotate(${credibility * 1.8 - 90}deg)`;
-  });
+  void cert.offsetWidth; // reflow restarts doc-issue
 
-  // count-up
-  if (reducedMotion()) {
-    $('cred-value').textContent = credibility;
-    needle.style.transform = `rotate(${credibility * 1.8 - 90}deg)`;
-  } else {
-    const start = performance.now();
-    const dur = 1400;
-    const tick = (now) => {
-      const k = Math.min(1, (now - start) / dur);
-      const eased = 1 - Math.pow(1 - k, 4);
-      $('cred-value').textContent = Math.round(credibility * eased);
-      if (k < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }
+  typewrite($('excuse-text'), excuse, () => sealAndSweep(credibility));
 
   cert.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
 }

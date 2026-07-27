@@ -4,33 +4,33 @@
    ================================================================ */
 
 :root {
-  /* Desk: deep charcoal tinted toward the stamp red — interrogation-room noir */
-  --desk: oklch(0.17 0.01 20);
-  --desk-deep: oklch(0.11 0.012 20);
-  --desk-ink: oklch(0.89 0.005 60);
-  --desk-ink-soft: oklch(0.68 0.008 40);
+  /* Desk: oxblood leather desktop — a real colour, not another black dark-mode canvas */
+  --desk: oklch(0.245 0.062 30);
+  --desk-deep: oklch(0.165 0.05 30);
+  --desk-ink: oklch(0.9 0.02 60);
+  --desk-ink-soft: oklch(0.72 0.03 50);
 
-  /* Paper + ink */
-  --paper: oklch(0.965 0.006 95);
-  --paper-shade: oklch(0.925 0.01 95);
-  --rule: oklch(0.8 0.012 95);
-  --ink: oklch(0.24 0.015 260);
-  --ink-soft: oklch(0.42 0.018 260);
+  /* Paper + ink (warm document black, not blue-black) */
+  --paper: oklch(0.963 0.008 92);
+  --paper-shade: oklch(0.925 0.012 92);
+  --rule: oklch(0.79 0.016 92);
+  --ink: oklch(0.245 0.018 88);
+  --ink-soft: oklch(0.44 0.022 88);
 
-  /* Stamp red (brand primary, carmine rubber-stamp ink) + ballpoint blue (accent) */
-  --stamp: oklch(0.51 0.19 20);
-  --stamp-deep: oklch(0.41 0.165 20);
-  --stamp-tint: oklch(0.51 0.19 20 / 0.08);
-  --pen: oklch(0.36 0.105 262);
+  /* Madder-red rubber-stamp ink (brand primary) + iron-gall blue (accent) */
+  --stamp: oklch(0.45 0.155 27);
+  --stamp-deep: oklch(0.36 0.13 27);
+  --stamp-tint: oklch(0.45 0.155 27 / 0.09);
+  --pen: oklch(0.36 0.085 252);
 
   /* Manila case-file folder */
-  --manila: oklch(0.77 0.09 82);
-  --manila-deep: oklch(0.67 0.095 78);
-  --manila-ink: oklch(0.34 0.055 70);
+  --manila: oklch(0.745 0.095 78);
+  --manila-deep: oklch(0.65 0.1 74);
+  --manila-ink: oklch(0.33 0.055 70);
 
-  --font-ui: 'Public Sans', system-ui, sans-serif;
-  --font-type: 'Courier Prime', 'Courier New', monospace;
-  --font-stamp: 'Bebas Neue', 'Arial Narrow', sans-serif;
+  --font-ui: 'Zilla Slab', Georgia, serif;
+  --font-type: 'Anonymous Pro', 'Courier New', monospace;
+  --font-stamp: 'Zilla Slab', Georgia, serif;
 
   --z-results: 10;
   --z-stamp: 20;
@@ -46,7 +46,7 @@ body {
   line-height: 1.5;
   color: var(--ink);
   background: var(--desk);
-  background-image: radial-gradient(120% 90% at 50% 0%, oklch(0.22 0.012 25), var(--desk) 55%, var(--desk-deep) 130%);
+  background-image: radial-gradient(120% 90% at 50% 0%, oklch(0.3 0.07 34), var(--desk) 55%, var(--desk-deep) 130%);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
 }
@@ -224,14 +224,15 @@ body {
 
 .wordmark {
   font-family: var(--font-stamp);
-  font-size: clamp(2.3rem, 10vw, 3.7rem);
-  line-height: 0.98;
-  letter-spacing: 0.05em;
-  font-weight: 400;
+  font-size: clamp(1.65rem, 7vw, 2.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  text-transform: uppercase;
   color: var(--ink);
   text-wrap: balance;
-  /* double-strike typewriter misprint */
-  text-shadow: 3px 2px 0 oklch(0.51 0.19 20 / 0.25);
+  /* double-strike misprint, as if the platen shifted */
+  text-shadow: 2px 1.5px 0 oklch(0.45 0.155 27 / 0.22);
 }
 .wordmark .tm {
   font-size: 0.28em;
@@ -511,10 +512,11 @@ body {
 
 .btn {
   font-family: var(--font-stamp);
-  font-size: 1.4rem;
-  letter-spacing: 0.1em;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 13px 22px 11px;
+  padding: 14px 22px 13px;
   border-radius: 3px;
   cursor: pointer;
   transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, opacity 0.2s;
@@ -592,7 +594,20 @@ body {
   border: 1.5px solid var(--ink);
   outline: 1px solid var(--ink);
   outline-offset: -6px;
-  animation: paper-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* the document is issued: fed up out of the folder, settling square */
+  animation: doc-issue 0.62s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes doc-issue {
+  from {
+    opacity: 0;
+    transform: translateY(46px) rotate(-1.4deg) scale(0.975);
+  }
+  60% { opacity: 1; }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* masking tape holding the certificate down */
@@ -626,10 +641,11 @@ body {
 
 .cert-title {
   font-family: var(--font-stamp);
-  font-weight: 400;
-  font-size: clamp(2rem, 8.5vw, 2.9rem);
-  letter-spacing: 0.06em;
-  line-height: 1.05;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 6.2vw, 2.1rem);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1.1;
   margin: 4px 0 6px;
   text-wrap: balance;
 }
@@ -648,12 +664,22 @@ body {
 
 .excuse {
   font-family: var(--font-type);
-  font-size: clamp(1.05rem, 4vw, 1.2rem);
-  line-height: 1.65;
+  font-size: clamp(1.02rem, 3.9vw, 1.15rem);
+  line-height: 1.72;
   padding: clamp(18px, 5vw, 28px) 2px;
   text-wrap: pretty;
   max-width: 62ch;
+  min-height: 4.5em; /* reserve height so the stamp doesn't jump while typing */
 }
+
+/* typewriter caret, only while the platen is running */
+.excuse.typing::after {
+  content: '▌';
+  color: var(--stamp);
+  margin-left: 1px;
+  animation: caret 0.62s steps(2) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
 
 /* Approved stamp */
 .stamp {
@@ -662,20 +688,21 @@ body {
   bottom: -6px;
   right: clamp(-4px, -1vw, 0px);
   font-family: var(--font-stamp);
-  font-size: clamp(1.9rem, 8vw, 2.7rem);
-  letter-spacing: 0.14em;
+  font-weight: 700;
+  font-size: clamp(1.35rem, 5.6vw, 1.95rem);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--stamp);
   border: 4px double var(--stamp);
   border-radius: 6px;
-  padding: 2px 16px 0;
+  padding: 4px 16px 2px;
   transform: rotate(-12deg);
   mix-blend-mode: multiply;
   pointer-events: none;
-  opacity: 0.92;
+  opacity: 0; /* the stamp does not exist until the clerk brings it down */
 }
 .stamp.slam {
-  animation: stamp-slam 0.45s cubic-bezier(0.36, 0, 0.66, -0.2) 0.75s both;
+  animation: stamp-slam 0.42s cubic-bezier(0.36, 0, 0.66, -0.2) both;
 }
 @keyframes stamp-slam {
   0% { opacity: 0; transform: rotate(-4deg) scale(2.6); }
@@ -684,11 +711,11 @@ body {
   100% { opacity: 0.92; transform: rotate(-12deg) scale(1); }
 }
 
-/* certificate shake on stamp impact */
-.certificate.thud { animation: paper-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both, thud 0.18s ease-out 1.05s; }
+/* the whole document takes the hit when the stamp lands */
+.certificate.thud { animation: thud 0.2s ease-out both; }
 @keyframes thud {
   0% { transform: none; }
-  40% { transform: translateY(2px) rotate(0.2deg); }
+  35% { transform: translateY(3px) rotate(0.22deg); }
   100% { transform: none; }
 }
 
@@ -828,8 +855,10 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .folder, .certificate, .certificate.thud { animation: none; }
-  .stamp.slam { animation: stamp-fade 0.3s ease-out 0.2s both; }
+  .stamp.slam { animation: stamp-fade 0.3s ease-out both; }
   @keyframes stamp-fade { from { opacity: 0; } to { opacity: 0.92; } }
+  .excuse.typing::after { display: none; }
+  .excuse { min-height: 0; }
   .gauge-needle { transition: none; }
   .check .box::after { transition: none; }
   .gen-status::after { animation: none; }
