@@ -65,6 +65,3 @@ Vercel reconoce Vite para la parte estática y publica `api/excuse.js` como func
 - **La animación no se impone.** El medidor de credibilidad, el golpe del sello y el
   contador tienen alternativa para `prefers-reduced-motion`. Quien ha pedido al sistema
   que no le muevan la pantalla, no se la mueve.
-- **El nombre del producto es ALIBI™** dentro de su propia ficción, y así aparece en el
-  certificado y en el prompt. El repositorio usa el nombre llano para que se entienda
-  de qué va sin tener que abrirlo.
